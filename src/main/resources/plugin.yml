@@ -1,0 +1,5 @@
+main: com.github.show0611.plugins.moreDifficult.Main
+name: MoreDifficult
+version: 1.0-SNAPSHOT
+authors: [show0611]
+description: Minecraft more difficult Plugin.

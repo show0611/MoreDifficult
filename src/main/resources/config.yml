@@ -1,0 +1,53 @@
+# Penalty list: [KILL, BAN, TIME_BAN, KICK, DAMAGE, CLEAR_INVENTORY, TELEPORT]
+# Difficulty:
+#     true = Allow
+#     false = Deny
+#
+# If choose Penalty: [BAN or TIME_BAN or DAMAGE or TELEPORT], you must add.
+#
+# If "BAN",
+#     Reason: "You got penalty."
+#
+# If "TIME_BAN",
+#     Reason: "You got penalty."
+#     Time: "yyyy.MM.dd_HH:mm:ss" // yyyy = 2017 etc, MM = 01 etc, dd = 02 etc, HH = 13 etc, mm = 05 etc, ss = 00 etc
+#
+# If "DAMAGE",
+#     Damage: n
+#
+# If "TELEPORT",
+#     Location: [x, y, z]
+Settings:
+   Penalty:
+      - KILL
+
+Difficulty:
+   Highest:
+      canMove: true
+      canInteract: true
+      canStatisticIncrement: true
+
+   High:
+      canDropItem: true
+      canExpChange: true
+      canEntityKill: true
+      canItemConsume: true
+      canPickupDropItem: true
+      canEntityInteract: true
+      canInventoryClick: true
+      canAwardAchevement: true
+
+   Normal:
+      canWalk: true
+      canSwim: true
+      canFall: true
+      canJump: true
+      canCraft: true
+      canSneak: true
+      canBedEnter: true
+      canOpenChest: true
+      canItemBreak: true
+      canPlaceBlock: true
+      canBreakBlock: true
+      canSwitchHotbar: true
+      canOpenInventory: true
