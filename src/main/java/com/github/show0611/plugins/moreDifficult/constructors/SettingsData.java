@@ -72,7 +72,7 @@ public class SettingsData {
 
         // High
         canDropItem = conf.getBoolean("Difficulty.High.canDropItem");
-        canExpChange = conf.getBoolean("Diffuculty.High.canExpChange");
+        canExpChange = conf.getBoolean("Difficulty.High.canExpChange");
         canEntityKill = conf.getBoolean("Difficulty.High.canEntityKill");
         canItemConsume = conf.getBoolean("Difficulty.High.canItemConsume");
         canPickupDropItem = conf.getBoolean("Difficulty.High.canPickupDropItem");
