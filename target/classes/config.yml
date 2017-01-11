@@ -40,7 +40,6 @@ Difficulty:
    Normal:
       canWalk: true
       canSwim: true
-      canFall: true
       canJump: true
       canCraft: true
       canSneak: true

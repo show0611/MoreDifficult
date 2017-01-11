@@ -1,42 +1,27 @@
 package com.github.show0611.plugins.moreDifficult.listeners;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerAchievementAwardedEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemBreakEvent;
-import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerStatisticIncrementEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 
-import com.github.show0611.plugins.moreDifficult.Main;
 import com.github.show0611.plugins.moreDifficult.constructors.SettingsData;
 
 public class EventListener implements Listener {
-    private static List<Player> killers = new ArrayList<>();
     private SettingsData sd = new SettingsData();
 
     @EventHandler
@@ -47,10 +32,11 @@ public class EventListener implements Listener {
         ploc.subtract(0, 1, 0);
 
         if (!sd.canMove) penalty(p);
-        if (!sd.canWalk && loc1.getY() == loc2.getY()) penalty(p);
-        if (!sd.canSwim && ploc.getBlock().getType().equals(Material.WATER)) penalty(p);
-        ploc.subtract(0, 2, 0);
-        if (!sd.canFall && loc1.getY() != loc2.getY() && ploc.getBlock().getType().equals(Material.AIR)) penalty(p);
+        if (!sd.canWalk && (loc1.getBlockX() == loc2.getBlockX() || loc1.getBlockY() == loc2.getBlockY()
+                || loc1.getBlockZ() == loc2.getBlockZ()))
+            penalty(p);
+        p.sendMessage(ploc.getBlock().getType().toString());
+        if (!sd.canSwim && ploc.getBlock().getType().equals(Material.STATIONARY_WATER)) penalty(p);
     }
 
     @EventHandler
@@ -61,23 +47,24 @@ public class EventListener implements Listener {
     @EventHandler
     public void onPlayerStatisticIncrement(PlayerStatisticIncrementEvent event) {
         Player p = event.getPlayer();
+        String s = event.getStatistic().toString();
+
+        p.sendMessage(s);
         if (!sd.canStatisticIncrement) penalty(p);
-        if (!sd.canJump && event.getStatistic() == Statistic.JUMP) penalty(p);
+        if (!sd.canJump && s.equals("JUMP")) penalty(p);
+        if (!sd.canCraft && s.equals("CRAFT_ITEM")) penalty(p);
+        if (!sd.canEntityKill && s.equals("ENTITY_KILL")) penalty(p);
+        if (!sd.canDropItem && s.equals("DROP")) penalty(event.getPlayer());
+        if (!sd.canItemBreak && s.equals("BREAK_ITEM")) penalty(event.getPlayer());
+        if (!sd.canItemConsume && s.equals("USE_ITEM")) penalty(event.getPlayer());
+        if (!sd.canPickupDropItem && s.equals("PICKUP")) penalty(event.getPlayer());
+        if (!sd.canOpenChest && (s.equals("CHEST_OPENED") || s.equals("ENDERCHEST_OPENED")))
+            penalty((Player) event.getPlayer());
     }
 
     @EventHandler
     public void onPlayerAchievementAwarded(PlayerAchievementAwardedEvent event) {
         if (!sd.canAwardAchevement) penalty(event.getPlayer());
-    }
-
-    @EventHandler
-    public void onPlayerItemDrop(PlayerDropItemEvent event) {
-        if (!sd.canDropItem) penalty(event.getPlayer());
-    }
-
-    @EventHandler
-    public void onPlayerItemConsume(PlayerItemConsumeEvent event) {
-        if (!sd.canItemConsume) penalty(event.getPlayer());
     }
 
     @EventHandler
@@ -87,32 +74,7 @@ public class EventListener implements Listener {
 
     @EventHandler
     public void onPlayerExpChange(PlayerExpChangeEvent event) {
-        System.out.println(!sd.canExpChange);
         if (!sd.canExpChange) penalty(event.getPlayer());
-    }
-
-    @EventHandler
-    public void onPlayerPickupItem(PlayerPickupItemEvent event) {
-        if (!sd.canPickupDropItem) penalty(event.getPlayer());
-    }
-
-    @EventHandler
-    public void onEntityDeath(EntityDeathEvent event) {
-        if (!sd.canEntityKill) killers.forEach(p -> penalty(p));
-    }
-
-    @EventHandler
-    public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-        Player p = (Player) event.getDamager();
-        killers.add(p);
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                for (Player pl : killers) {
-                    if (pl.equals(p)) killers.remove(pl);
-                }
-            }
-        }.runTaskLater(Main.instance, 10);
     }
 
     @EventHandler
@@ -123,11 +85,6 @@ public class EventListener implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         if (!sd.canInventoryClick) penalty((Player) event.getWhoClicked());
-    }
-
-    @EventHandler
-    public void onCraftItem(CraftItemEvent event) {
-        if (!sd.canCraft) penalty((Player) event.getWhoClicked());
     }
 
     @EventHandler
@@ -142,8 +99,6 @@ public class EventListener implements Listener {
 
     @EventHandler
     public void onInventoryOpen(InventoryOpenEvent event) {
-        if (!sd.canOpenChest && event.getInventory().getType().equals(InventoryType.CHEST))
-            penalty((Player) event.getPlayer());
         if (!sd.canOpenInventory) penalty((Player) event.getPlayer());
     }
 
@@ -155,11 +110,6 @@ public class EventListener implements Listener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         if (!sd.canBreakBlock) penalty(event.getPlayer());
-    }
-
-    @EventHandler
-    public void onPlayerItemBreak(PlayerItemBreakEvent event) {
-        if (!sd.canItemBreak) penalty(event.getPlayer());
     }
 
     public void penalty(Player p) {
