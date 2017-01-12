@@ -35,7 +35,6 @@ public class EventListener implements Listener {
         if (!sd.canWalk && (loc1.getBlockX() == loc2.getBlockX() || loc1.getBlockY() == loc2.getBlockY()
                 || loc1.getBlockZ() == loc2.getBlockZ()))
             penalty(p);
-        p.sendMessage(ploc.getBlock().getType().toString());
         if (!sd.canSwim && ploc.getBlock().getType().equals(Material.STATIONARY_WATER)) penalty(p);
     }
 
@@ -49,7 +48,6 @@ public class EventListener implements Listener {
         Player p = event.getPlayer();
         String s = event.getStatistic().toString();
 
-        p.sendMessage(s);
         if (!sd.canStatisticIncrement) penalty(p);
         if (!sd.canJump && s.equals("JUMP")) penalty(p);
         if (!sd.canCraft && s.equals("CRAFT_ITEM")) penalty(p);

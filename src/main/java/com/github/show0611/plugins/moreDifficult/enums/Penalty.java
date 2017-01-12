@@ -22,7 +22,7 @@ public enum Penalty {
     public void run(Player p, Object... objs) {
         switch (str) {
         case ("Kill"):
-            p.performCommand("kill");
+            Main.getSvr().dispatchCommand(Main.getSvr().getConsoleSender(), "kill " + p.getName());
             break;
 
         case ("Ban"):

@@ -9,6 +9,7 @@ Spigot 1.10.2以降の対応予定はございませんので要望を送って�
 1, BuildTools.jarを実行した際に生成されるフォルダの中のBuildData/bin/SpecialSource-2.jarとCraftBukkit/deprecation-mappings.csrgのパスを記憶します。<br>
 2, 「java -jar "SpecialSource-2.jarのパス" map -m "deprecation-mappings.csrgのパス" -i "MoreDifficultのプラグインのパス" -o "対応した変換後のjar出力先"」 とコマンドを実行します。<br>
 3, 後は出力されたjarを使用してください。<br>
+<br>
 # Change log
 ### ver: 1.2-SNAPSHOT
 使用Event数の削減及び動作の安定化。<br>
